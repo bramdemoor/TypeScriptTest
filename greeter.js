@@ -12,22 +12,22 @@ var WorldObject = (function () {
         this._x = x;
         this._y = y;
     }
-    WorldObject.prototype.update = function () {
-        console.log('update!');
-    };
     return WorldObject;
 })();
-var Bomb = (function (_super) {
-    __extends(Bomb, _super);
-    function Bomb(x, y) {
+var Box = (function (_super) {
+    __extends(Box, _super);
+    function Box(x, y) {
         _super.call(this, x, y);
         this.x = x;
         this.y = y;
     }
-    Bomb.prototype.draw = function (c) {
+    Box.prototype.draw = function (c) {
         c.fillStyle("#ff0000").fillRect(this._x, this._y, 32, 32).blur();
     };
-    return Bomb;
+    Box.prototype.update = function () {
+        this._y += 1;
+    };
+    return Box;
 })(WorldObject);
 var Bullet = (function (_super) {
     __extends(Bullet, _super);
@@ -36,12 +36,21 @@ var Bullet = (function (_super) {
         this.x = x;
         this.y = y;
     }
+    Bullet.prototype.draw = function (c) {
+        c.fillStyle("#00ff00").fillRect(this._x, this._y, 8, 4).blur();
+    };
+    Bullet.prototype.update = function () {
+        this._x += 1;
+    };
     return Bullet;
 })(WorldObject);
-var bomb = new Bomb(10, 20);
+var box = new Box(10, 20);
+var bullet = new Bullet(40, 50);
 cq(640, 480).onStep(function (delta, time) {
-    bomb.update();
+    box.update();
+    bullet.update();
 }).onRender(function (delta, time) {
     this.clearRect(0, 0, 640, 480).fillStyle("#cccccc").fillRect(0, 0, 640, 480);
-    bomb.draw(this);
+    box.draw(this);
+    bullet.draw(this);
 }).appendTo("body");

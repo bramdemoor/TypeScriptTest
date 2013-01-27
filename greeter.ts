@@ -5,38 +5,47 @@ class WorldObject {
 		this._x = x;
 		this._y = y;
 	}
-	public update() {
-		console.log('update!');
-	}
 }
 
-class Bomb extends WorldObject {
+class Box extends WorldObject {
 	constructor(public x: number, public y: number) { super(x,y); }
 	draw(c) {
-		c.fillStyle("#ff0000").fillRect(this._x,this. _y, 32, 32).blur()
+		c.fillStyle("#ff0000").fillRect(this._x,this. _y, 32, 32).blur();
+	}
+	update() {
+		this._y += 1;
 	}
 }
 
 class Bullet extends WorldObject {
 	constructor(public x: number, public y: number) { super(x,y); }
+	draw(c) {
+		c.fillStyle("#00ff00").fillRect(this._x,this. _y, 8, 4).blur();
+	}
+	update() {
+		this._x += 1;
+	}
 }
 
 // Create our scene
-var bomb = new Bomb(10, 20);
+var box = new Box(10, 20);
+var bullet = new Bullet(40, 50);
 
 declare var cq: any;
 
 // Simple game loop
 cq(640,480)
 	.onStep(function(delta, time) { 
-		bomb.update();
+		box.update();
+		bullet.update();
 	})
 	.onRender(function(delta, time) { 
 		this
 			.clearRect(0,0,640,480)
 			.fillStyle("#cccccc")
 			.fillRect(0,0,640,480);
-		bomb.draw(this);
+		box.draw(this);
+		bullet.draw(this);
 	})
 	.appendTo("body");
 
