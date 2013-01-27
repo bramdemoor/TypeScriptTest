@@ -58,19 +58,45 @@ var CrossHair = (function (_super) {
     CrossHair.prototype.draw = function (c) {
         c.fillStyle("#0000ff").fillRect(this._x, this._y, 16, 16);
     };
+    CrossHair.prototype.update = function () {
+    };
     return CrossHair;
 })(WorldObject);
-var box = new Box(10, 20);
-var bullet = new Bullet(40, 50);
-var crosshair = new CrossHair(0, 0);
-cq(640, 480).onStep(function (delta, time) {
-    box.update();
-    bullet.update();
+var GameWorld = (function () {
+    function GameWorld() {
+        this._width = 640;
+        this._height = 640;
+        this.start();
+    }
+    GameWorld.prototype.start = function () {
+        this._crosshair = new CrossHair(0, 0);
+        this._objects = [
+            new Box(10, 20), 
+            new Bullet(40, 50), 
+            this._crosshair
+        ];
+    };
+    GameWorld.prototype.update = function () {
+        for(var i in this._objects) {
+            this._objects[i].update();
+        }
+    };
+    GameWorld.prototype.mouseMove = function (x, y) {
+        this._crosshair.move(x, y);
+    };
+    GameWorld.prototype.draw = function (c) {
+        c.save().clear("#220033");
+        for(var i in this._objects) {
+            this._objects[i].draw(c);
+        }
+    };
+    return GameWorld;
+})();
+var myWorld = new GameWorld();
+cq(myWorld._width, myWorld._height).onStep(function (delta, time) {
+    myWorld.update();
 }).onMouseMove(function (x, y) {
-    crosshair.move(x, y);
+    myWorld.mouseMove(x, y);
 }).onRender(function (delta, time) {
-    this.save().clear("#220033");
-    box.draw(this);
-    bullet.draw(this);
-    crosshair.draw(this);
+    myWorld.draw(this);
 }).appendTo("body");

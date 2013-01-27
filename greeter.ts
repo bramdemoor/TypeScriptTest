@@ -38,29 +38,49 @@ class CrossHair extends WorldObject {
 	draw(c) {
 		c.fillStyle("#0000ff").fillRect(this._x,this. _y, 16, 16);
 	}
+	update() {}
 }
 
-// Create our scene
-var box = new Box(10, 20);
-var bullet = new Bullet(40, 50);
-var crosshair = new CrossHair(0, 0);
+class GameWorld {
+	_width = 640;
+	_height = 640;
+	_objects: WorldObject[];
+	_crosshair: CrossHair;
+	
+	constructor() {
+		this.start();
+	}
+	
+	start() {
+		this._crosshair = new CrossHair(0, 0);
+		this._objects = [ new Box(10, 20), new Bullet(40, 50), this._crosshair ];
+	}
+	update() {
+		for (var i in this._objects) {
+			this._objects[i].update();            
+        }		
+	}
+	mouseMove(x,y) {
+		this._crosshair.move(x,y);
+	}
+	draw(c) {
+		c.save().clear("#220033");
+		for (var i in this._objects) {
+			this._objects[i].draw(c);            
+        }
+	}	
+}
 
-// Simple game loop
-cq(640, 480)
+var myWorld = new GameWorld();
+
+cq(myWorld._width, myWorld._height)
 	.onStep(function(delta, time) { 
-		box.update();
-		bullet.update();
+		myWorld.update();		
 	})
 	.onMouseMove(function(x, y) {
-		crosshair.move(x,y);		
+		myWorld.mouseMove(x,y);		
 	})	
 	.onRender(function(delta, time) { 
-		
-		this.save().clear("#220033")			
-		box.draw(this);
-		bullet.draw(this);
-		crosshair.draw(this);
+		myWorld.draw(this);			
 	})
 	.appendTo("body");
-
-
