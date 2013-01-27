@@ -1,1 +1,1 @@
-tsc greeter.ts
+tsc --out app.js src/greeter.ts
