@@ -1,1 +1,1 @@
-tsc --out app.js src/app.ts
+tsc --out public/client.js src/app.ts
