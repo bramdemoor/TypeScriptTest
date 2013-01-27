@@ -25,11 +25,13 @@ var Box = (function (_super) {
         this.x = x;
         this.y = y;
     }
-    Box.prototype.draw = function (c) {
+    Box.prototype.draw = function (c, delta, time) {
         c.fillStyle("#ff0000").fillRect(this._x, this._y, 32, 32);
     };
-    Box.prototype.update = function () {
-        this._y += 1;
+    Box.prototype.update = function (delta, time) {
+        console.log(delta);
+        console.log(time);
+        this._y += (delta / 5);
     };
     return Box;
 })(WorldObject);
@@ -40,11 +42,11 @@ var Bullet = (function (_super) {
         this.x = x;
         this.y = y;
     }
-    Bullet.prototype.draw = function (c) {
+    Bullet.prototype.draw = function (c, delta, time) {
         c.fillStyle("#00ff00").fillRect(this._x, this._y, 8, 4);
     };
-    Bullet.prototype.update = function () {
-        this._x += 1;
+    Bullet.prototype.update = function (delta, time) {
+        this._x += (delta / 5);
     };
     return Bullet;
 })(WorldObject);
@@ -55,10 +57,10 @@ var CrossHair = (function (_super) {
         this.x = x;
         this.y = y;
     }
-    CrossHair.prototype.draw = function (c) {
+    CrossHair.prototype.draw = function (c, delta, time) {
         c.fillStyle("#0000ff").fillRect(this._x, this._y, 16, 16);
     };
-    CrossHair.prototype.update = function () {
+    CrossHair.prototype.update = function (delta, time) {
     };
     return CrossHair;
 })(WorldObject);
@@ -76,27 +78,27 @@ var GameWorld = (function () {
             this._crosshair
         ];
     };
-    GameWorld.prototype.update = function () {
+    GameWorld.prototype.update = function (delta, time) {
         for(var i in this._objects) {
-            this._objects[i].update();
+            this._objects[i].update(delta, time);
         }
     };
     GameWorld.prototype.mouseMove = function (x, y) {
         this._crosshair.move(x, y);
     };
-    GameWorld.prototype.draw = function (c) {
+    GameWorld.prototype.draw = function (c, delta, time) {
         c.save().clear("#220033");
         for(var i in this._objects) {
-            this._objects[i].draw(c);
+            this._objects[i].draw(c, delta, time);
         }
     };
     return GameWorld;
 })();
 var myWorld = new GameWorld();
 cq(myWorld._width, myWorld._height).onStep(function (delta, time) {
-    myWorld.update();
+    myWorld.update(delta, time);
 }).onMouseMove(function (x, y) {
     myWorld.mouseMove(x, y);
 }).onRender(function (delta, time) {
-    myWorld.draw(this);
+    myWorld.draw(this, delta, time);
 }).appendTo("body");
